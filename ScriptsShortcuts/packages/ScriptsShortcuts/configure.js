@@ -45,12 +45,19 @@ function getScriptList(){
   var userPath = fileMapper.toNativePath(specialFolders.userScripts);
   var varPath = System.getenv("TOONBOOM_GLOBAL_SCRIPT_LOCATION");
   var systemPath = fileMapper.toNativePath (specialFolders.resource+"/scripts");
-  
+  var databaseRootPath = fileMapper.toNativePath(specialFolders.database+"/scripts");
+  var databaseEnvPath = fileMapper.toNativePath(scene.currentEnvironmentPath()+"/scripts");
+
   var userScripts = getFiles("*.js", userPath);
   var varScripts = getFiles("*.js", varPath);
   var systemScripts = getFiles("*.js", systemPath);
-  
-  var scripts = (userScripts.concat(varScripts)).concat(systemScripts)
+  var databaseRootScripts = getFiles("*.js", databaseRootPath);
+  var databaseEnvScripts = getFiles("*.js", databaseEnvPath);
+
+  var scripts = userScripts.concat(varScripts, systemScripts);
+  if (about.isDatabaseMode()) {
+    scripts = scripts.concat(databaseRootScripts, databaseEnvScripts);
+  }
   return scripts;
 }
 
